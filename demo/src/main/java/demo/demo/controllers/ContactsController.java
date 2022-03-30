@@ -1,7 +1,8 @@
 package demo.demo.controllers;
 
 import demo.demo.entities.contacts;
-import demo.demo.repositories.contactsrepository;
+import demo.demo.repositories.ContactsRepository;
+import demo.demo.services.ContactsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,42 +16,43 @@ import java.util.Optional;
 @RestController
 @RequestMapping("contacts")
 
-public class contactscontroller {
+public class ContactsController {
 @Autowired
-    contactsrepository ContactsRepository;
+    ContactsService contactsService;
 @RequestMapping("/all")
-    List<contacts> getAllcontacts(){return ContactsRepository.findAll();}
+    List<contacts> getAllContacts()
+{return contactsService.findAll();}
 
     @GetMapping("/{id}")
     public contacts getAdById(@PathVariable Long id) {
-        Optional<contacts> result = ContactsRepository.findById(id);
-        return result.isPresent() ? result.get() : null;
+        Optional<contacts> result = contactsService.findById(id);
+        return result.orElse(null);
     }
      @GetMapping("/ime/{ime}")
-     public ResponseEntity<?> getcontactByime(@PathVariable(required = false) String ime) {
+     public ResponseEntity<?> getContactByIme(@PathVariable(required = false) String ime) {
          if (ime == null || ime.isBlank()) {
              return ResponseEntity.ok().body("No ime inserted!");
          }
-         Optional<contacts> result = ContactsRepository.findByIme(ime);
+         Optional<contacts> result = contactsService.findByIme(ime);
          return result.isPresent() ? ResponseEntity.ok(result.get()) : ResponseEntity.ok("nqma takova ime!");
   }
    @GetMapping("/registraciq/{registraciq}")
-    public ResponseEntity<?> getAdByregistraciq(@PathVariable String registraciq)  {
+    public ResponseEntity<?> getAdByRegistraciq(@PathVariable String registraciq)  {
 
         if (registraciq == null || registraciq.isBlank()) {
             return ResponseEntity.ok().body("No registraciq inserted!");
         }
-        Optional<contacts> result = ContactsRepository.findByRegistraciq(registraciq);
+        Optional<contacts> result = contactsService.findByRegistraciq(registraciq);
         return result.isPresent() ? ResponseEntity.ok(result.get()) : ResponseEntity.ok("nqma takava registraciq!");
     }
 
     @GetMapping("/polica/{polica}")
-    public ResponseEntity<?> getAdBypolica(@PathVariable String polica)  {
+    public ResponseEntity<?> getAdByPolica(@PathVariable String polica)  {
 
         if (polica == null || polica.isBlank()) {
             return ResponseEntity.ok().body("No nomer_polica inserted!");
         }
-        Optional<contacts> result = ContactsRepository.findBypolica(polica);
+        Optional<contacts> result = contactsService.findByPolica(polica);
         return result.isPresent() ? ResponseEntity.ok(result.get()) : ResponseEntity.ok("No contact found!");
     }
 
@@ -72,7 +74,7 @@ public class contactscontroller {
         boolean isNew = id == null;
 
         contacts contact = new contacts(id, ime, familiq, registraciq,otkude,polica,nachalna_data,kraina_data,suma,egn,telefon);
-       contact = ContactsRepository.save(contact);
+       contact = contactsService.save(contact);
 
         Map<String, Object> response = new HashMap<>();
         response.put("generatedId", contact.getId());
@@ -98,10 +100,10 @@ public class contactscontroller {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAd(@PathVariable Long id) {
 
-        if (!ContactsRepository.existsById(id)) {
+        if (!contactsService.existsById(id)) {
             return ResponseEntity.ok("No such contact!");
         }
-        ContactsRepository.deleteById(id);
+        contactsService.deleteById(id);
         return ResponseEntity.ok("Deleted successfully!");
     }
 }

@@ -6,7 +6,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import demo.demo.entities.contacts;
-import demo.demo.repositories.contactsrepository;
+import demo.demo.repositories.ContactsRepository;
 
 import java.util.ArrayList;
 
@@ -24,14 +24,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-@ContextConfiguration(classes = {contactscontroller.class})
+@ContextConfiguration(classes = {ContactsController.class})
 @ExtendWith(SpringExtension.class)
 public class contactscontrollerTest {
     @Autowired
-    private contactscontroller contactscontroller;
+    private ContactsController contactscontroller;
 
     @MockBean
-    private contactsrepository contactsrepository;
+    private ContactsRepository contactsrepository;
 
     @Test
     public void testDeleteAd() throws Exception {
@@ -113,7 +113,7 @@ public class contactscontrollerTest {
         contacts.setKraina_data("Kraina data");
         contacts.setIme("Ime");
         Optional<contacts> ofResult = Optional.<contacts>of(contacts);
-        when(this.contactsrepository.findBypolica(anyString())).thenReturn(ofResult);
+        when(this.contactsrepository.findByPolica(anyString())).thenReturn(ofResult);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/contacts/polica/{polica}", "value");
         MockMvcBuilders.standaloneSetup(this.contactscontroller)
                 .build()
@@ -129,7 +129,7 @@ public class contactscontrollerTest {
 
     @Test
     public void testGetAdBypolica2() throws Exception {
-        when(this.contactsrepository.findBypolica(anyString())).thenReturn(Optional.<contacts>empty());
+        when(this.contactsrepository.findByPolica(anyString())).thenReturn(Optional.<contacts>empty());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/contacts/polica/{polica}", "value");
         MockMvcBuilders.standaloneSetup(this.contactscontroller)
                 .build()
